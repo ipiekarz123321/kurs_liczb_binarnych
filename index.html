@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kurs Systemu Binarnego - Władca Bitów</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --success: #16a34a;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --ai-color: #8b5cf6; /* Fioletowy dla AI */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg);
+            color: var(--text);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: #0f172a;
+        }
+
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 10px;
+            margin-bottom: 40px;
+        }
+
+        .module {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary);
+        }
+
+        /* Specjalny styl dla modułu AI */
+        .module-ai {
+            border-left: 5px solid var(--ai-color);
+            background: linear-gradient(to bottom right, #ffffff, #f5f3ff);
+        }
+
+        .module-ai h2 {
+            color: var(--ai-color);
+        }
+
+        .bit-table {
+            width: 100%;
+            text-align: center;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .bit-table th {
+            background-color: #e2e8f0;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+        }
+
+        .bit-table td {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            font-family: monospace;
+            font-size: 1.2em;
+        }
+
+        .exercise {
+            background-color: #eff6ff;
+            border: 1px dashed var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        details {
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        summary {
+            font-weight: bold;
+            color: var(--primary);
+        }
+
+        .answer {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #dcfce7;
+            color: #14532d;
+            border-radius: 5px;
+        }
+
+        /* Certificate Styles */
+        .certificate-container {
+            margin-top: 60px;
+            text-align: center;
+            padding: 40px;
+            border: 10px double #d97706;
+            background: #fffbeb;
+            position: relative;
+            page-break-inside: avoid;
+            display: none; /* Domyślnie ukryty! */
+        }
+
+        .cert-header {
+            font-family: 'Times New Roman', serif;
+            font-size: 3em;
+            color: #92400e;
+            margin-bottom: 10px;
+        }
+
+        .cert-sub {
+            font-size: 1.2em;
+            color: #b45309;
+            margin-bottom: 30px;
+        }
+
+        .cert-name {
+            font-size: 2em;
+            border-bottom: 2px solid #92400e;
+            display: inline-block;
+            min-width: 300px;
+            margin: 20px 0;
+            font-family: cursive;
+            color: #1e293b;
+        }
+
+        .badge {
+            font-size: 4em;
+            margin-top: 20px;
+        }
+
+        code {
+            background-color: #e2e8f0;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        /* Style dla sekcji AI */
+        .ai-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        button.ai-btn {
+            background-color: var(--ai-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        button.ai-btn:hover {
+            background-color: #7c3aed;
+        }
+
+        button.ai-btn:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .ai-output {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            min-height: 50px;
+            white-space: pre-wrap;
+        }
+
+        .loading {
+            color: var(--ai-color);
+            font-style: italic;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            flex-grow: 1;
+        }
+        
+        .exam-input {
+            width: 100px;
+            margin-left: 10px;
+            border: 2px solid #9333ea;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Kurs: Podstawy Systemu Binarnego</h1>
+    
+    <p>Witaj w interaktywnym kursie. Przeczytaj każdą sekcję, wykonaj ćwiczenia, a na końcu czeka na Ciebie certyfikat!</p>
+
+    <!-- MODUŁ 1 -->
+    <div class="module">
+        <h2>Moduł 1: Jak czytać binarnie?</h2>
+        <p>Pamiętaj: każda pozycja w liczbie binarnej to kolejna potęga liczby 2, idąc od prawej strony.</p>
+        
+        <table class="bit-table">
+            <tr>
+                <th>128</th>
+                <th>64</th>
+                <th>32</th>
+                <th>16</th>
+                <th>8</th>
+                <th>4</th>
+                <th>2</th>
+                <th>1</th>
+            </tr>
+            <tr>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+                <td>0</td>
+                <td>1</td>
+            </tr>
+        </table>
+        <p>Powyższa liczba to: <strong>16 + 4 + 1 = 21</strong>.</p>
+
+        <div class="exercise">
+            <h3>📝 Ćwiczenie 1</h3>
+            <p>Przelicz liczbę binarną <code>00101100</code> na system dziesiętny.</p>
+            <details>
+                <summary>Sprawdź odpowiedź</summary>
+                <div class="answer">
+                    Mamy jedynki na pozycjach: 32, 8 oraz 4.<br>
+                    <strong>32 + 8 + 4 = 44</strong>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- MODUŁ 2 -->
+    <div class="module">
+        <h2>Moduł 2: Jak pisać binarnie?</h2>
+        <p>Aby zamienić naszą liczbę na binarną, zadajemy sobie pytania: "Czy ta potęga dwójki się zmieści?". Jeśli tak, wpisujemy 1 i odejmujemy tę wartość.</p>
+        <p>Przykład dla liczby <strong>13</strong>:</p>
+        <ul>
+            <li>Czy 8 się mieści w 13? TAK. (Zostaje 5) -> Piszemy <strong>1</strong></li>
+            <li>Czy 4 się mieści w 5? TAK. (Zostaje 1) -> Piszemy <strong>1</strong></li>
+            <li>Czy 2 się mieści w 1? NIE. -> Piszemy <strong>0</strong></li>
+            <li>Czy 1 się mieści w 1? TAK. -> Piszemy <strong>1</strong></li>
+        </ul>
+        <p>Wynik: <strong>1101</strong></p>
+
+        <div class="exercise">
+            <h3>📝 Ćwiczenie 2</h3>
+            <p>Zapisz liczbę <strong>50</strong> w systemie binarnym.</p>
+            <details>
+                <summary>Sprawdź odpowiedź</summary>
+                <div class="answer">
+                    1. 32 się mieści w 50 (zostaje 18) -> <strong>1</strong><br>
+                    2. 16 się mieści w 18 (zostaje 2) -> <strong>1</strong><br>
+                    3. 8 się nie mieści -> <strong>0</strong><br>
+                    4. 4 się nie mieści -> <strong>0</strong><br>
+                    5. 2 się mieści (zostaje 0) -> <strong>1</strong><br>
+                    6. 1 się nie mieści -> <strong>0</strong><br>
+                    Wynik: <strong>110010</strong>
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- MODUŁ 3 -->
+    <div class="module">
+        <h2>Moduł 3: Matematyka Binarna</h2>
+        <h3>Dodawanie (+)</h3>
+        <p>Zasada: <code>1 + 1 = 0</code> (i 1 dalej).</p>
+        <pre>
+  1 0 1  (5)
++ 0 1 1  (3)
+-------
+  1 0 0 0 (8)
+        </pre>
+        <h3>Odejmowanie (-)</h3>
+        <p>Zasada: <code>0 - 1 = 1</code> (pożyczamy od sąsiada z lewej).</p>
+
+        <div class="exercise">
+            <h3>📝 Ćwiczenie 3</h3>
+            <p>Oblicz binarnie: <code>110 + 011</code> (czyli 6 + 3).</p>
+            <details>
+                <summary>Sprawdź odpowiedź</summary>
+                <div class="answer">
+                    Od prawej:<br>
+                    0 + 1 = 1<br>
+                    1 + 1 = 0 (1 dalej)<br>
+                    1 + 0 + (1 z pamięci) = 10<br>
+                    Wynik: <strong>1001</strong> (czyli 9)
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <!-- MODUŁ 4: LABORATORIUM AI -->
+    <div class="module module-ai">
+        <h2>🤖 Moduł 4: Laboratorium AI</h2>
+        <p>Potrzebujesz więcej ćwiczeń lub wyjaśnień? Skorzystaj z pomocy sztucznej inteligencji Gemini!</p>
+        
+        <div class="exercise" style="border-color: var(--ai-color); background-color: #fcfaff;">
+            <h3>✨ Generator Wyzwań</h3>
+            <p>Poproś AI o stworzenie unikalnego zadania matematycznego.</p>
+            <button id="generateBtn" class="ai-btn" onclick="generateChallenge()">
+                ✨ Generuj Wyzwanie
+            </button>
+            <div id="challengeOutput" class="ai-output" style="display:none;"></div>
+        </div>
+
+        <div class="exercise" style="border-color: var(--ai-color); background-color: #fcfaff;">
+            <h3>💬 Wirtualny Nauczyciel</h3>
+            <p>Masz pytanie dotyczące bitów, bajtów lub systemu binarnego? Zapytaj tutaj!</p>
+            <div class="ai-controls">
+                <input type="text" id="askInput" placeholder="Np. Dlaczego 1 bajt ma 8 bitów?">
+                <button id="askBtn" class="ai-btn" onclick="askTutor()">
+                    Wyślij
+                </button>
+            </div>
+            <div id="tutorOutput" class="ai-output" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- EGZAMIN KOŃCOWY -->
+    <div class="module" style="border-left-color: #9333ea;">
+        <h2>🎓 Egzamin Końcowy</h2>
+        <p>Rozwiąż ten krótki test. Jeśli odpowiesz poprawnie na wszystkie pytania, otrzymasz Certyfikat!</p>
+        
+        <div id="examForm">
+            <p><strong>Twoje Imię (do certyfikatu):</strong></p>
+            <input type="text" id="studentName" placeholder="Wpisz imię i nazwisko" style="width: 100%; margin-bottom: 20px;">
+            <hr>
+
+            <p><strong>Pytanie 1:</strong> Ile różnych wartości można zapisać w 8 bitach (1 bajcie)?</p>
+            <input type="number" id="q1" class="exam-input" placeholder="...">
+            <hr>
+            
+            <p><strong>Pytanie 2:</strong> Jaki jest wynik dodawania binarnie 1 + 1? (Zapisz cyframi)</p>
+            <input type="text" id="q2" class="exam-input" placeholder="...">
+            <hr>
+
+            <p><strong>Pytanie 3:</strong> Przelicz <code>0000 0111</code> na dziesiętny.</p>
+            <input type="number" id="q3" class="exam-input" placeholder="...">
+            
+            <br><br>
+            <button class="ai-btn" style="background-color: #9333ea; width: 100%; justify-content: center;" onclick="checkExam()">
+                🏆 Sprawdź Wyniki i Odbierz Certyfikat
+            </button>
+            
+            <p id="examError" style="color: #dc2626; display: none; margin-top: 15px; background: #fee2e2; padding: 10px; border-radius: 6px; font-weight: bold;">
+                ❌ Ups! Któraś odpowiedź jest błędna lub brakuje imienia. Spróbuj jeszcze raz!
+            </p>
+        </div>
+    </div>
+
+    <!-- CERTYFIKAT -->
+    <div id="certificate" class="certificate-container">
+        <div class="cert-header">Certyfikat Ukończenia</div>
+        <div class="cert-sub">Zaświadcza się, że Użytkownik opanował podstawy systemu binarnego</div>
+        
+        <div id="certName" class="cert-name" contenteditable="true">Wpisz swoje imię</div>
+        
+        <p>Zwanego dalej:</p>
+        <h3>Mistrzem Zer i Jedynek</h3>
+        
+        <p>Ukończono kurs: "Logika Komputera"</p>
+        
+        <div class="badge">💻 010101 💾</div>
+        
+        <div style="margin-top: 30px; font-size: 0.8em; color: #666;">
+            Podpis Instruktora: <em>Twój Asystent AI</em>
+        </div>
+        
+        <p style="font-size: 0.8em; color: #9333ea; margin-top: 20px;">(Możesz teraz wydrukować tę stronę lub zrobić zrzut ekranu!)</p>
+    </div>
+
+    <script>
+        const apiKey = ""; // API Key injected by environment
+
+        async function callGemini(userPrompt, systemInstruction = "") {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                systemInstruction: { parts: [{ text: systemInstruction }] }
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                return "Przepraszam, wystąpił problem z połączeniem z AI. Spróbuj ponownie za chwilę.";
+            }
+        }
+
+        async function generateChallenge() {
+            const outputDiv = document.getElementById('challengeOutput');
+            const btn = document.getElementById('generateBtn');
+            
+            outputDiv.style.display = 'block';
+            outputDiv.innerHTML = '<span class="loading">✨ Generowanie wyzwania...</span>';
+            btn.disabled = true;
+
+            const prompt = "Stwórz jedno krótkie zadanie matematyczne związane z systemem binarnym (np. przeliczanie na dziesiętny, dodawanie binarne). Nie podawaj od razu rozwiązania, tylko treść zadania. Następnie w nowej linii napisz 'ODPOWIEDŹ:' i podaj rozwiązanie oraz krótkie wyjaśnienie.";
+            
+            const result = await callGemini(prompt, "Jesteś nauczycielem informatyki. Twórz ciekawe zadania.");
+            
+            // Formatowanie prostego markdowna na HTML (nowe linie)
+            outputDiv.innerHTML = result.replace(/\n/g, '<br>');
+            btn.disabled = false;
+        }
+
+        async function askTutor() {
+            const input = document.getElementById('askInput');
+            const outputDiv = document.getElementById('tutorOutput');
+            const btn = document.getElementById('askBtn');
+            
+            if (!input.value.trim()) return;
+
+            outputDiv.style.display = 'block';
+            outputDiv.innerHTML = '<span class="loading">✨ Myślę...</span>';
+            btn.disabled = true;
+
+            const prompt = input.value;
+            const systemPrompt = "Jesteś przyjaznym nauczycielem informatyki dla początkujących. Wyjaśniaj zagadnienia związane z komputerami, systemem binarnym i logiką w prosty, obrazowy sposób. Używaj emotikon. Odpowiadaj krótko i na temat.";
+
+            const result = await callGemini(prompt, systemPrompt);
+            
+            outputDiv.innerHTML = `<strong>Pytanie:</strong> ${prompt}<br><br><strong>Odpowiedź AI:</strong><br>${result.replace(/\n/g, '<br>')}`;
+            btn.disabled = false;
+            input.value = '';
+        }
+
+        // Nowa funkcja sprawdzająca egzamin
+        function checkExam() {
+            const nameInput = document.getElementById('studentName').value.trim();
+            const a1 = document.getElementById('q1').value.trim();
+            const a2 = document.getElementById('q2').value.trim();
+            const a3 = document.getElementById('q3').value.trim();
+            
+            const errorMsg = document.getElementById('examError');
+            const cert = document.getElementById('certificate');
+            
+            // Walidacja imienia
+            if (nameInput.length === 0) {
+                 errorMsg.innerText = "❌ Proszę wpisać swoje imię!";
+                 errorMsg.style.display = 'block';
+                 return;
+            }
+
+            // Poprawne odpowiedzi: 256, 10, 7
+            if (a1 === "256" && a2 === "10" && a3 === "7") {
+                errorMsg.style.display = 'none';
+                cert.style.display = 'block';
+                
+                // Wpisz imię z pola do certyfikatu
+                document.getElementById('certName').innerText = nameInput;
+                
+                // Przewiń do certyfikatu
+                cert.scrollIntoView({behavior: "smooth"});
+            } else {
+                errorMsg.innerText = "❌ Ups! Któraś odpowiedź jest błędna. Spróbuj jeszcze raz!";
+                errorMsg.style.display = 'block';
+                cert.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>
